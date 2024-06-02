@@ -2,6 +2,8 @@
 
 Auto Tap for Prick Game Telegram Bot
 
+<center><img src="./images/image.png" width="400px" height="400px"></center>
+
 # Features
 
 - [x] Auto Tap
