@@ -36,7 +36,7 @@ class PrickTod:
         print("                          ", flush=True, end="\r")
 
     def log(self, message):
-        now = datetime.now().isoformat(" ").split('.')[0]
+        now = datetime.now().isoformat(" ").split(".")[0]
         print(f"{hitam}[{now}]{reset} {message}")
 
     def active_refill_energy(self, id, ua):
@@ -48,10 +48,10 @@ class PrickTod:
             "X-Requested-With": "org.telegram.messenger",
         }
         res = requests.put(url, headers=headers)
-        open('.http_logs.log','a').write(res.text + "\n")
+        open(".http_logs.log", "a").write(res.text + "\n")
         free_refill_left = res.json()["result"]["freeEnergyRegeneration"]
         refill_energy = res.json()["result"]["energy"]
-        return refill_energy,free_refill_left
+        return refill_energy, free_refill_left
 
     def active_turbo(self, id, ua):
         url = "https://api.prick.lol/v1/boost/turbo"
@@ -62,7 +62,7 @@ class PrickTod:
             "X-Requested-With": "org.telegram.messenger",
         }
         res = requests.put(url, headers=headers)
-        open('.http_logs.log','a').write(res.text + "\n")
+        open(".http_logs.log", "a").write(res.text + "\n")
         end_free_turbo = res.json()["result"]["turboEndedAt"].replace("Z", "")
         free_turbo_left = res.json()["result"]["freeTurbo"]
         end_format = round(datetime.fromisoformat(end_free_turbo).timestamp())
@@ -117,22 +117,22 @@ class PrickTod:
         while True:
             if energy == 0:
                 return
-            
+
             if free_turbo > 0:
                 if is_turbo is False:
                     free_turbo, end_turbo = self.active_turbo(id, user_agent)
                     self.log(f"{hijau}active turbo successfully !")
                     start_turbo = int(time.time())
                     is_turbo = True
-                
+
                 if (int(time.time()) - start_turbo) >= 60:
                     is_turbo = False
                     start_turbo = 0
-                    
+
             taps = random.randint(12, 20)
             if (taps * 50) > energy:
                 taps = int(energy / 50)
-                
+
             list_taps = [round(time.time() * 1000) for _ in range(taps)]
             data = {"action": "tap", "data": list_taps}
             ws.send(json.dumps(data))
@@ -144,7 +144,7 @@ class PrickTod:
                     _energy = data_res["energy"]
                     self.log(f"{hijau}energy {putih}+{_energy}")
                     continue
-                
+
                 if data_res["action"] == "result-tap":
                     balance = data_res["balance"]
                     energy = data_res["energy"]
@@ -156,9 +156,9 @@ class PrickTod:
                     else:
                         self.countdown(10)
                     break
-                
+
             if energy <= 100 and free_energy_refill > 0:
-                energy,free_energy_refill = self.active_refill_energy(id, user_agent)
+                energy, free_energy_refill = self.active_refill_energy(id, user_agent)
                 self.log(f"{hijau}refill energy successfully !")
                 continue
 
@@ -183,17 +183,17 @@ class PrickTod:
                 self.log(f"{hijau}account number : {putih}{no + 1}")
                 self.game(id)
                 print("~" * 50)
-                
+
             end = int(time.time())
             total = end - start
             if total > self.DEFAULT_COUNTDOWN:
                 continue
-            
+
             if len(ids) > 1:
                 countdown = self.DEFAULT_COUNTDOWN - total
                 self.countdown(countdown)
                 continue
-            
+
             self.countdown(self.DEFAULT_COUNTDOWN)
 
 
