@@ -92,7 +92,7 @@ class PrickTod:
         ws.connect("wss://api.prick.lol/ws", header=headers)
         self.log(f"{hijau}connect to wss server !")
         res = ws.recv()
-        open(".wss_logs.log", "a").write(res + "\n")
+        open(".wss_logs.log", "a",encoding="utf-8").write(res + "\n")
         if '"action":null' in res:
             self.log(f"{merah}id is invalid !")
             return
@@ -138,7 +138,7 @@ class PrickTod:
             ws.send(json.dumps(data))
             for i in range(2):
                 res = ws.recv()
-                open(".wss_logs.log", "a").write(res + "\n")
+                open(".wss_logs.log", "a",encoding="utf-8").write(res + "\n")
                 data_res = json.loads(res)
                 if data_res["action"] == "energy_recovery":
                     _energy = data_res["energy"]
