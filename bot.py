@@ -91,7 +91,11 @@ class PrickTod:
         ws = WebSocket()
         ws.connect("wss://api.prick.lol/ws", header=headers)
         self.log(f"{hijau}connect to wss server !")
-        res = ws.recv()
+        for i in range(2):
+            res = ws.recv()
+            if "data" in json.loads(res).keys():
+                break
+            
         open(".wss_logs.log", "a",encoding="utf-8").write(res + "\n")
         if '"action":null' in res:
             self.log(f"{merah}id is invalid !")
