@@ -5,7 +5,7 @@ import time
 import random
 import requests
 from colorama import *
-from websocket import WebSocket
+from websocket import WebSocket,_exceptions
 from datetime import datetime
 
 init(autoreset=True)
@@ -139,7 +139,12 @@ class PrickTod:
 
             list_taps = [round(time.time() * 1000) for _ in range(taps)]
             data = {"action": "tap", "data": list_taps}
-            ws.send(json.dumps(data))
+            try:
+               ws.send(json.dumps(data))
+            except _exceptions.WebSocketConnectionClosedException:
+                self.log(f'{merah}connection clonse !')
+                return False
+            
             for i in range(2):
                 res = ws.recv()
                 open(".wss_logs.log", "a",encoding="utf-8").write(res + "\n")
