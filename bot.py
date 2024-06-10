@@ -142,11 +142,15 @@ class PrickTod:
             try:
                ws.send(json.dumps(data))
             except _exceptions.WebSocketConnectionClosedException:
-                self.log(f'{merah}connection clonse !')
+                self.log(f'{merah}connection close from server !')
                 return False
             
             for i in range(2):
-                res = ws.recv()
+                try:
+                    res = ws.recv()
+                except _exceptions.WebSocketConnectionClosedException:
+                    self.log(f'{merah}connection close from server !')
+                    return False
                 open(".wss_logs.log", "a",encoding="utf-8").write(res + "\n")
                 data_res = json.loads(res)
                 if data_res["action"] == "energy_recovery":
