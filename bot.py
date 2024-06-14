@@ -5,7 +5,7 @@ import time
 import random
 import requests
 from colorama import *
-from websocket import WebSocket,_exceptions
+from websocket import WebSocket, _exceptions
 from datetime import datetime
 
 init(autoreset=True)
@@ -89,14 +89,19 @@ class PrickTod:
             "Sec-WebSocket-Protocol": str(id),
         }
         ws = WebSocket()
-        ws.connect("wss://api.prick.lol/ws", header=headers)
+        ws.connect(
+            "wss://api.prick.lol/ws",
+            header=headers,
+            host="api.prick.lol",
+            origin="https://app.prick.lol",
+        )
         self.log(f"{hijau}connect to wss server !")
         for i in range(2):
             res = ws.recv()
             if "data" in json.loads(res).keys():
                 break
-            
-        open(".wss_logs.log", "a",encoding="utf-8").write(res + "\n")
+
+        open("wss_logs.log", "a", encoding="utf-8").write(res + "\n")
         if '"action":null' in res:
             self.log(f"{merah}id is invalid !")
             return
@@ -140,18 +145,18 @@ class PrickTod:
             list_taps = [round(time.time() * 1000) for _ in range(taps)]
             data = {"action": "tap", "data": list_taps}
             try:
-               ws.send(json.dumps(data))
+                ws.send(json.dumps(data))
             except _exceptions.WebSocketConnectionClosedException:
-                self.log(f'{merah}connection close from server !')
+                self.log(f"{merah}connection close from server !")
                 return False
-            
+
             for i in range(2):
                 try:
                     res = ws.recv()
                 except _exceptions.WebSocketConnectionClosedException:
-                    self.log(f'{merah}connection close from server !')
+                    self.log(f"{merah}connection close from server !")
                     return False
-                open(".wss_logs.log", "a",encoding="utf-8").write(res + "\n")
+                open("wss_logs.log", "a", encoding="utf-8").write(res + "\n")
                 data_res = json.loads(res)
                 if data_res["action"] == "energy_recovery":
                     _energy = data_res["energy"]
